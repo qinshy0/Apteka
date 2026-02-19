@@ -1,0 +1,5 @@
+﻿echo ".vs/" >> .gitignore
+echo "bin/" >> .gitignore
+echo "obj/" >> .gitignore
+echo "*.csproj.user" >> .gitignore
+echo "*.suo" >> .gitignore
