@@ -22,7 +22,7 @@ namespace Pharmacy
         public Medicine() { }
 
         public Medicine(int id, string name, string manufacturer, decimal price,
-                       int quantity, string category, DateTime expiryDate, bool requiresPrescription)
+                   int quantity, string category, DateTime expiryDate, bool requiresPrescription)
         {
             Id = id;
             Name = name;
@@ -30,10 +30,9 @@ namespace Pharmacy
             Category = category;
             ExpiryDate = expiryDate;
             RequiresPrescription = requiresPrescription;
-            Price = price;
-            Quantity = quantity;
+            Price = ValidatePrice(price);      // <-- добавил проверку
+            Quantity = ValidateQuantity(quantity); // <-- добавил проверку
         }
-
         public bool IsExpired()
         {
             return ExpiryDate.Date < DateTime.Now.Date;
@@ -46,4 +45,38 @@ namespace Pharmacy
             return daysLeft <= daysThreshold;
         }
     }
+}
+private decimal ValidatePrice(decimal price)
+{
+    if (price < 0)
+    {
+        Console.WriteLine($"Предупреждение: Цена не может быть отрицательной. Установлено 0.");
+        return 0;
+    }
+    return price;
+}
+
+private int ValidateQuantity(int quantity)
+{
+    if (quantity < 0)
+    {
+        Console.WriteLine($"Предупреждение: Количество не может быть отрицательным. Установлено 0.");
+        return 0;
+    }
+    return quantity;
+}
+
+public bool Sell(int amount)
+{
+    if (amount <= 0) return false;
+    if (Quantity < amount) return false;
+    if (IsExpired()) return false;
+
+    Quantity -= amount;
+    return true;
+}
+
+public void Restock(int amount)
+{
+    if (amount > 0) Quantity += amount;
 }
