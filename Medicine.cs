@@ -30,32 +30,20 @@ namespace Pharmacy
             Category = category;
             ExpiryDate = expiryDate;
             RequiresPrescription = requiresPrescription;
-            Price = price < 0 ? 0 : price;
-            Quantity = quantity < 0 ? 0 : quantity;
+            Price = price;
+            Quantity = quantity;
         }
 
-        public bool IsExpired() => ExpiryDate.Date < DateTime.Now.Date;
+        public bool IsExpired()
+        {
+            return ExpiryDate.Date < DateTime.Now.Date;
+        }
 
         public bool IsExpiringSoon(int daysThreshold = 30)
         {
             if (IsExpired()) return false;
             int daysLeft = (ExpiryDate.Date - DateTime.Now.Date).Days;
             return daysLeft <= daysThreshold;
-        }
-
-        public bool Sell(int amount)
-        {
-            if (amount <= 0 || Quantity < amount || IsExpired()) return false;
-            Quantity -= amount;
-            return true;
-        }
-
-        public string GetStatus()
-        {
-            if (IsExpired()) return "ПРОСРОЧЕНО";
-            if (IsExpiringSoon()) return "СКОРО ИСТЕКАЕТ";
-            if (Quantity < 10) return "МАЛО";
-            return "НОРМА";
         }
     }
 }
