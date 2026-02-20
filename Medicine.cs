@@ -80,3 +80,23 @@ public void Restock(int amount)
 {
     if (amount > 0) Quantity += amount;
 }
+public bool CheckPrescriptionRequirement()
+{
+    return RequiresPrescription;
+}
+
+public string GetStatus()
+{
+    if (IsExpired()) return "ПРОСРОЧЕНО";
+    if (IsExpiringSoon()) return "СКОРО ИСТЕКАЕТ";
+    if (Quantity < 10) return "МАЛО";
+    return "НОРМА";
+}
+
+public override string ToString()
+{
+    string prescription = RequiresPrescription ? " [Рецепт]" : "";
+    string expiryStatus = IsExpired() ? " ПРОСРОЧЕНО!" : (IsExpiringSoon() ? " Скоро истекает!" : "");
+
+    return $"{Name} ({Manufacturer}) - {Price:C2} - {Quantity} шт.{prescription}{expiryStatus}";
+}
