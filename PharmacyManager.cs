@@ -47,3 +47,41 @@ namespace Pharmacy
         public int GetNextReceiptNumber() => nextReceiptNumber++;
     }
 }
+public List<Medicine> FindMedicineByName(string name)
+{
+    if (string.IsNullOrWhiteSpace(name)) return new List<Medicine>();
+
+    return medicines.Where(m => !m.IsExpired() &&
+        m.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
+        .OrderBy(m => m.Name).ToList();
+}
+
+public List<Medicine> FindMedicineByCategory(string category)
+{
+    if (string.IsNullOrWhiteSpace(category)) return new List<Medicine>();
+
+    return medicines.Where(m => !m.IsExpired() &&
+        m.Category.IndexOf(category, StringComparison.OrdinalIgnoreCase) >= 0)
+        .OrderBy(m => m.Name).ToList();
+}
+
+public Customer FindCustomerByPhone(string phone)
+{
+    if (string.IsNullOrWhiteSpace(phone)) return null;
+
+    string cleanPhone = phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+    return customers.FirstOrDefault(c =>
+        c.Phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "") == cleanPhone);
+}
+
+public List<Medicine> GetExpiringMedicines(int daysThreshold = 30)
+{
+    return medicines.Where(m => m.IsExpiringSoon(daysThreshold) && !m.IsExpired())
+        .OrderBy(m => m.ExpiryDate).ToList();
+}
+
+public List<Medicine> GetLowStockMedicines(int threshold = 10)
+{
+    return medicines.Where(m => m.Quantity <= threshold && !m.IsExpired())
+        .OrderBy(m => m.Quantity).ToList();
+}
