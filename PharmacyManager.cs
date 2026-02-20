@@ -85,3 +85,30 @@ public List<Medicine> GetLowStockMedicines(int threshold = 10)
     return medicines.Where(m => m.Quantity <= threshold && !m.IsExpired())
         .OrderBy(m => m.Quantity).ToList();
 }
+public Prescription FindPrescription(string patientName, string medicineName)
+{
+    if (string.IsNullOrWhiteSpace(patientName) || string.IsNullOrWhiteSpace(medicineName))
+        return null;
+
+    return prescriptions.FirstOrDefault(p =>
+        p.PatientName.IndexOf(patientName, StringComparison.OrdinalIgnoreCase) >= 0 &&
+        p.MedicineName.IndexOf(medicineName, StringComparison.OrdinalIgnoreCase) >= 0 &&
+        p.IsValid());
+}
+
+public void RecordSale(decimal amount)
+{
+    if (amount > 0) dailyRevenue += amount;
+}
+
+public decimal GetDailyRevenue() => dailyRevenue;
+
+public int GetPrescriptionMedicinesCount()
+{
+    return medicines.Count(m => m.RequiresPrescription && !m.IsExpired());
+}
+
+public void ResetDailyRevenue()
+{
+    dailyRevenue = 0;
+}
