@@ -43,27 +43,5 @@ namespace Pharmacy
         {
             ExpiryDate = IssueDate.AddDays(daysValid);
         }
-
-        public bool IsValid() => DateTime.Now.Date <= ExpiryDate.Date && UsedQuantity < MaxQuantity;
-
-        public bool Use(int quantity)
-        {
-            if (quantity <= 0 || !IsValid() || UsedQuantity + quantity > MaxQuantity)
-                return false;
-
-            UsedQuantity += quantity;
-            return true;
-        }
-
-        public void ShowPrescriptionInfo()
-        {
-            Console.WriteLine($"=== РЕЦЕПТ #{Id} ===");
-            Console.WriteLine($"Пациент: {PatientName}");
-            Console.WriteLine($"Врач: {DoctorName} (лиц. {DoctorLicense})");
-            Console.WriteLine($"Лекарство: {MedicineName}");
-            Console.WriteLine($"Действителен до: {ExpiryDate:dd.MM.yyyy}");
-            Console.WriteLine($"Использовано: {UsedQuantity}/{MaxQuantity}");
-            Console.WriteLine($"Статус: {(IsValid() ? "ДЕЙСТВИТЕЛЕН" : "НЕДЕЙСТВИТЕЛЕН")}");
-        }
     }
 }
