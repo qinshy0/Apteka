@@ -82,3 +82,41 @@ public bool Extend(int additionalDays)
     ExpiryDate = ExpiryDate.AddDays(additionalDays);
     return true;
 }
+public bool Use(int quantity)
+{
+    if (quantity <= 0)
+    {
+        Console.WriteLine($"Ошибка: Количество должно быть положительным. Запрошено: {quantity}");
+        return false;
+    }
+
+    if (!IsValid())
+    {
+        Console.WriteLine($"Ошибка: Рецепт #{Id} недействителен!");
+        return false;
+    }
+
+    if (UsedQuantity + quantity > MaxQuantity)
+    {
+        Console.WriteLine($"Ошибка: Превышение допустимого количества по рецепту. " +
+                         $"Доступно: {MaxQuantity - UsedQuantity}, запрошено: {quantity}");
+        return false;
+    }
+
+    UsedQuantity += quantity;
+    return true;
+}
+
+public double GetUsagePercentage()
+{
+    return (double)UsedQuantity / MaxQuantity * 100;
+}
+
+public override string ToString()
+{
+    string status = IsValid() ? "✓ Действителен" :
+                   (DateTime.Now.Date > ExpiryDate.Date ? "✗ Просрочен" : "✗ Использован");
+
+    return $"Рецепт #{Id}: {PatientName} - {MedicineName} " +
+           $"[{UsedQuantity}/{MaxQuantity}] {status}";
+}
