@@ -66,3 +66,44 @@ namespace Pharmacy
         }
     }
 }
+private void SearchMedicines()
+{
+    Console.Clear();
+    Console.WriteLine("=== ПОИСК ЛЕКАРСТВ ===");
+    Console.WriteLine("1. По названию");
+    Console.WriteLine("2. По категории");
+    Console.Write("Выберите: ");
+
+    string choice = Console.ReadLine();
+    Console.Write("Введите поисковый запрос: ");
+    string query = Console.ReadLine();
+
+    List<Medicine> results = choice == "1" ? manager.FindMedicineByName(query) :
+                            choice == "2" ? manager.FindMedicineByCategory(query) : null;
+
+    if (results == null || results.Count == 0)
+    {
+        Console.WriteLine("Ничего не найдено.");
+        return;
+    }
+
+    Console.WriteLine($"\nНайдено: {results.Count}");
+    foreach (var m in results)
+        Console.WriteLine($"ID {m.Id}: {m.Name} - {m.Price:C2} ({m.Quantity} шт.)");
+}
+
+private void ShowAllMedicines()
+{
+    Console.Clear();
+    Console.WriteLine("=== ВСЕ ЛЕКАРСТВА ===");
+
+    var medicines = manager.GetAllMedicines().Where(m => !m.IsExpired()).ToList();
+    if (medicines.Count == 0)
+    {
+        Console.WriteLine("Нет лекарств в наличии.");
+        return;
+    }
+
+    foreach (var m in medicines)
+        Console.WriteLine($"ID {m.Id}: {m.Name} - {m.Price:C2} ({m.Quantity} шт.) [{m.GetStatus()}]");
+}
