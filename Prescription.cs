@@ -45,3 +45,40 @@ namespace Pharmacy
         }
     }
 }
+public bool IsValid()
+{
+    return DateTime.Now.Date <= ExpiryDate.Date && UsedQuantity < MaxQuantity;
+}
+
+public void ShowPrescriptionInfo()
+{
+    Console.WriteLine("╔════════════════════════════════════════════╗");
+    Console.WriteLine($"║                 РЕЦЕПТ #{Id,-13}           ║");
+    Console.WriteLine("╠════════════════════════════════════════════╣");
+    Console.WriteLine($"║ Пациент:        {PatientName,-25} ║");
+    Console.WriteLine($"║ Врач:           {DoctorName,-25} ║");
+    Console.WriteLine($"║ Лицензия врача: {DoctorLicense,-25} ║");
+    Console.WriteLine($"║ Лекарство:      {MedicineName,-25} ║");
+    Console.WriteLine($"║ Выписан:        {IssueDate:dd.MM.yyyy,-25} ║");
+    Console.WriteLine($"║ Действует до:   {ExpiryDate:dd.MM.yyyy,-25} ║");
+    Console.WriteLine($"║ Количество:     {UsedQuantity}/{MaxQuantity,-22} ║");
+    Console.WriteLine($"║ Осталось:       {RemainingQuantity,-25} ║");
+
+    if (IsValid())
+        Console.WriteLine("║ Статус:         ДЕЙСТВИТЕЛЕН             ║");
+    else if (DateTime.Now.Date > ExpiryDate.Date)
+        Console.WriteLine("║ Статус:         ПРОСРОЧЕН                ║");
+    else if (IsFullyUsed)
+        Console.WriteLine("║ Статус:         ИСПОЛЬЗОВАН             ║");
+    else
+        Console.WriteLine("║ Статус:         НЕДЕЙСТВИТЕЛЕН          ║");
+
+    Console.WriteLine("╚════════════════════════════════════════════╝");
+}
+
+public bool Extend(int additionalDays)
+{
+    if (additionalDays <= 0) return false;
+    ExpiryDate = ExpiryDate.AddDays(additionalDays);
+    return true;
+}
